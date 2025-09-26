@@ -51,6 +51,10 @@ while True:
                 print("Seamos libres, que lo demás no importa nada. Es 9 de julio")
                 
                 currentTrack = newTrack(monthTracks, "himno_nacional_argentino")
+            case 9:
+                monthTracks = getMonthlyTracks("september")
+
+                currentTrack = newTrack(monthTracks, "america_fuck_yeah")
             case 10:
                 monthTracks = getMonthlyTracks("october")
                 
