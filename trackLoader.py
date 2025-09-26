@@ -11,74 +11,81 @@ pygame.mixer.init()
 baseDirectory = Path(__file__).resolve().parent
 
 # Used to define tracks directory
-def trackPath(trackName):
+def getTrackPath(trackName):
     return baseDirectory / "audio_tracks" / (jsonParser.getTrackPath(trackName))
 
-def getTrackData(trackName):
-    return baseDirectory / "track_data" / (jsonParser.getTracksForMonth(trackName))
-
 # Used to play tracks when is the correct date
-def playTrack(trackPath):
+def playTrack(trackMetadata):
+    trackName = jsonParser.getTrackName(trackMetadata)
+    trackPath = baseDirectory / "audio_tracks" / (trackMetadata["path"])
+    trackAuthor = jsonParser.getTrackAuthor(trackMetadata)
+
     pygame.mixer.music.load(str(trackPath))
     pygame.mixer.music.play(loops=0)
-
-    trackName = jsonParser.getTrackName(trackPath)
-    trackAuthor = jsonParser.getTrackAuthor(trackPath)
 
     print(f"Reproduciendo: {trackName} - {trackAuthor}")
 
 def randomTrack(trackList):
     return random.choice(trackList)
 
-# Every track has its own path
-julyNinthPath = trackPath("himno_nacional_argentino")
-oktoberFirstPath = trackPath("fuegos_de_octubre")
-novemberFirstPath = trackPath("dirge_for_november")
-novemberFourthPath = trackPath("la_melodia_de_dios")
-birthdayPath = trackPath("feliz_cum")
-chrismasPath = trackPath("all_i_want_for_chrismas")
+def newTrack(month, trackId):
+    return jsonParser.getTrackMetadata(month, trackId)
+
+def getMonthlyTracks(monthId:str):
+    return jsonParser.getTracksByMonth(monthId)
 
 # Counter for stopping the track once finishes
 trackCounter = 0
-
-# A list of tracks
-allTracks = [julyNinthPath, oktoberFirstPath, novemberFirstPath, novemberFourthPath, birthdayPath]
-novemberTracks = [novemberFirstPath, novemberFourthPath]
 
 # Infinite loop, it stops when the song finishes or if it isn´t an special day
 while True:
     currentMonth = date.today().month
     currentDay = date.today().day
     try:
+        monthTracks = None
+        currentTrack = None
         # Depending on the month, diferent tracks will be played
         match currentMonth:
             case 7:
+                monthTracks = getMonthlyTracks("july")
                 print("Seamos libres, que lo demás no importa nada. Es 9 de julio")
-                playTrack(julyNinthPath)
+                
+                currentTrack = newTrack(monthTracks, "himno_nacional_argentino")
             case 10:
+                monthTracks = getMonthlyTracks("october")
+                
                 print("Llegó la revolución, es 1 de octubre")
-                playTrack(oktoberFirstPath)
-            case 9:
+                currentTrack = newTrack(monthTracks, "fuegos_de_octubre")
+            case 11:
+                monthTracks = getMonthlyTracks("november")
+
                 if (currentDay == 1):
                     print("Prepará el ataúd, es 1 de noviembre")
-                    playTrack(novemberFirstPath)
+                    currentTrack = newTrack(monthTracks, "dirge_for_november")
                 elif (currentDay == 4):
                     print("Hora de llorar, es 4 de noviembre")
-                    playTrack(novemberFourthPath)
+                    currentTrack = newTrack(monthTracks, "la_melodia_de_dios")
                 else :
-                    print("Reproduciendo una pista aleatoria de noviembre")
-                    playTrack(randomTrack(novemberTracks))
+                    currentTrack = newTrack(monthTracks, "dirge_for_november")
+                    
+                    print("default hacia",jsonParser.getTrackName(currentTrack))
             case 12:
+                monthTracks = jsonParser.getTracksByMonth("december")
+
                 if (currentDay == 16):
                     print("Feliz cum, hijo de puta")
-                    playTrack(birthdayPath)
+                    currentTrack = newTrack(monthTracks, "feliz_cum")
                 elif (currentDay == 25):
-                    playTrack(chrismasPath)
+                    currentTrack = newTrack(monthTracks, "all_i_want_for_chrismas")
             case _:
-                print("Hoy no es un dia especial, acá tenés una pista aleatoria")
-                randomChosenTrack = randomTrack(allTracks)
-                playTrack(randomChosenTrack)
+                print("¿Que hiciste para llegar acá?")
+                break
+            
+        if (currentTrack == None):
+            print("No hay pistas el dia de hoy")
+            break
 
+        playTrack(currentTrack)
         trackCounter += 1
 
         # Prevents the script finishing before the song
