@@ -1,8 +1,9 @@
 import json
+import random
 from pathlib import Path
 
 baseDirectory = Path(__file__).resolve().parent
-tracks = baseDirectory / "track_data" / "tracks.json"
+tracks = baseDirectory / "data" / "tracks.json"
 
 def getTracksByMonth(month:str):
     with open(tracks) as f:
@@ -12,6 +13,15 @@ def getTracksByMonth(month:str):
 
 def getTrackMetadata(month, trackId):
     return month[trackId]
+
+def getRandomTrack(monthId: str):
+    with open(tracks) as file:
+        tracksJson = json.load(file)
+
+    trackIds = list(tracksJson[monthId].keys())
+    randomTrackId = random.choice(trackIds)
+    
+    return tracksJson[monthId][randomTrackId]
 
 def getTrackName(track):
     return track["name"]
@@ -23,11 +33,11 @@ def getTrackAuthor(track):
     return track["author"]
 
 class Encoder:
-    def __init__(self ,pMonth:str, pName:str, pAuthor:str, pTrackId:str):
+    def __init__(self, pMonth:str, pName:str, pAuthor:str, pTrackId:str):
         self.month = pMonth.lower()
         self.trackId = pTrackId.lower().replace(" ","_")
         self.name = pName
-        self.path = self.trackId + ".mp3"
+        self.path = self.month[:3] + "/" + self.trackId + ".mp3"
         self.author = pAuthor
 
     def encodeTrack(self):
