@@ -16,16 +16,14 @@ def codifyTrack(pMonth:str, pPhraseDay:str):
     track = eyed3.load(trackPath)
     trackName = track.tag.title
 
-    hasPhrase = pPhraseDay if not pPhraseDay == "" else ""
-
-    print(trackName)
+    phraseDay = pPhraseDay if not pPhraseDay == "" else ""
 
     trackMetadata = jsonParser.Encoder(
         pMonth=pMonth,
         pName=trackName,
         pAuthor=track.tag.artist,
         pTrackId=trackPath.stem,
-        pPhraseDay=hasPhrase
+        pPhraseDay=phraseDay
     )
 
     return trackMetadata
@@ -46,4 +44,14 @@ def insertTrack():
             else:
                 codifiedTrack = codifyTrack(trackMonth, phraseDay)
 
-        codifiedTrack.encodeTrack()
+        else:
+             codifiedTrack = codifyTrack(trackMonth, "")
+
+        if codifiedTrack is None:
+             print("Error, track couldn't be loaded.")
+             return
+        else:
+             codifiedTrack.encodeTrack()
+
+if __name__ == "__main__":
+     insertTrack()

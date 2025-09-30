@@ -6,26 +6,27 @@ import random
 from pathlib import Path
 
 baseDirectory = Path(__file__).resolve().parent
-tracks = (baseDirectory.parent) / "assets/data" / "tracks.json"
+tracksPath = (baseDirectory.parent) / "assets" / "data" / "tracks.json"
+
+def isJsonEmpty():
+    return not tracksPath.exists()
 
 # Returns the entire JSON ready to be read, without the necesity of re-open the actual file.
 def getTracksJson():
-    with open(tracks) as file:
+    with open(tracksPath) as file:
         tracksJson = json.load(file)
         
     return tracksJson
 
 # Returns the track's metadata. Is searched with the month and its own id.
 def getTrackMetadata(pMonthId, pTrackId):
-    with open(tracks) as file:
-        tracksJson = json.load(file)
+    tracksJson = getTracksJson()
 
     return tracksJson[pMonthId][pTrackId]
 
 # Returns a random track from the current month.
 def getRandomTrack(monthId: str):
-    with open(tracks) as file:
-        tracksJson = json.load(file)
+    tracksJson = getTracksJson()
 
     trackIds = list(tracksJson[monthId].keys())
     randomTrackId = random.choice(trackIds)
@@ -44,11 +45,14 @@ class Encoder:
 
     # Writes the data given on the constructor onto tracks.json
     def encodeTrack(self):
-        if not tracks.exists():
-            self._createEmptyTracksFile()
-
         try:
-            with open(tracks, "r", encoding='utf-8') as file:
+            tracksPath.parent.mkdir(parents=True, exist_ok=True)
+
+            if (not tracksPath.exists()):
+                with open(tracksPath, "w", encoding="utf-8") as file:
+                    json.dump({}, file, indent=3, ensure_ascii=False)
+
+            with open(tracksPath, "r", encoding='utf-8') as file:
                 existingTracks = json.load(file)
             
             if(self.month not in existingTracks):
@@ -58,8 +62,9 @@ class Encoder:
 
             existingTracks[self.month][self.trackId] = trackData
 
-            with open(tracks, "w", encoding='utf-8') as file:
+            with open(tracksPath, "w", encoding='utf-8') as file:
                 json.dump(existingTracks, file, indent=3, ensure_ascii=False)
         
         except Exception as e:
             print(f"The following error just happened: {e}")
+            print("We are on module jsonParser.py, encodeTrack()")

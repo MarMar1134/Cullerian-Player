@@ -65,8 +65,18 @@ while True:
                 monthId = month.name.lower()
                 break
 
-        trackId = fileManager.getDailyTrack(monthId, str(currentDay + 1))
+        if (jsonParser.isJsonEmpty()):
+            answer = input("Welcome to the Cullerian Player! To start, you need to add a track: (Y/N)")
             
+            if(answer.lower() == "y"):
+                trackLoader.insertTrack()
+                break
+            else:
+                print("All right, good bye then!")
+                break
+
+        trackId = fileManager.getDailyTrack(monthId, str(currentDay))
+         
         # If there's a track available for today, is set up to be played and is shown it's phrase.
         if(not trackId == ""):
             todaysPhrase = fileManager.getDailyPhrase(monthId, str(currentDay))
@@ -79,10 +89,20 @@ while True:
             print("Somehow, you discovered month 13...")
             break
 
-        # If today there are no special tracks, we set up one randomly.
-        if (currentTrack == None):
-            print("There are now special tracks today. Choosing a random one...")
-            currentTrack = randomTrack(monthId)
+        try:
+            # If today there are no special tracks, we set up one randomly.
+            if (currentTrack == None):
+                print("There are now special tracks today. Choosing a random one...")
+                currentTrack = randomTrack(monthId)
+        except Exception as e:
+            answer = input(f"It seems that there are no tracks for your month, ¿do you want to add one?")
+            
+            if(answer.lower() == "y"):
+                trackLoader.insertTrack()
+                break
+            else:
+                print("All right, good bye then!")
+                break
 
         playTrack(currentTrack)
         trackCounter += 1
@@ -104,6 +124,7 @@ while True:
 
     except KeyboardInterrupt:
         print("Track stopped by user input.\n")
+        pygame.mixer.music.stop()
 
         print("Thanks for utilize the Cullerian Player!, do you want to add another track? (Y/N)")
         answer = input()

@@ -8,11 +8,14 @@ phrasesDirectory = (baseDirectory.parent) / "assets" / "phrases"
 # Defines a directory for the phrase file. If the phrase doesn't exist, it put him on the directory.
 # Returns True if the phrase didn't exist, False otherwise.
 def addPhrase(pMonthId:str, pDay:str, pPhrase:str):
+    if (not phrasesDirectory.exists()):
+        phrasesDirectory.mkdir(parents=True, exist_ok=True)
+
     monthPath = phrasesDirectory / pMonthId
     phrasePath = monthPath / (pMonthId + "_" + pDay + ".txt")
 
     if(not monthPath.exists()):
-        Path(monthPath).mkdir()
+       monthPath.mkdir(parents=True, exist_ok=True)
 
     if(phrasePath.exists()):
         print("This day already has a phrase.")
@@ -24,6 +27,7 @@ def addPhrase(pMonthId:str, pDay:str, pPhrase:str):
 
     except Exception as e:
         print(f"The following error just happened: {e}")
+        print("We are on module fileManager.py, addPhrase()")
 
 # With the passed month and day, determines with phrase is the one that goes.
 # Returns the phrase i found, an empty string otherwise.
@@ -43,6 +47,7 @@ def getDailyPhrase(pMonth:str, pDay:str):
         return currentPhrase
     except Exception as e:
         print(f"The following error just happened: {e}")
+        print("We are on module fileManager.py, getDailyPhrase()")
 
 # Copies the track from its source to his directory, based on the month selected by the user.
 # Returns the new location of the track.
@@ -61,6 +66,9 @@ def addTrack(pMonthId:str):
 
     trackPath = Path(track)
 
+    if (not trackPath.exists()):
+        trackPath.mkdir(parents=True, exist_ok=True)
+
     try:
         with open(trackPath, "rb") as file:
             fileData = file.read()
@@ -68,7 +76,7 @@ def addTrack(pMonthId:str):
         monthPath = audioDirectory / pMonthId
 
         if(not monthPath.exists()):
-            Path(monthPath).mkdir()
+            Path(monthPath).mkdir(parents=True, exist_ok=True)
 
         newPath = monthPath / trackPath.name
 
@@ -77,11 +85,15 @@ def addTrack(pMonthId:str):
 
     except Exception as e:
         print(f"The following error just happened: {e}")
+        print("We are on module fileManager.py, addTrack()")
         root.destroy()
         return None
 
     root.destroy()
     return newPath
+
+if __name__ == "__main__":
+    addTrack("jan")
 
 # With the current month and day, determines wich track needs to be played. Returns its id if found, an empty
 # string otherwise.
