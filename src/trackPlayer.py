@@ -1,8 +1,24 @@
 import pygame
 import jsonParser
 import trackLoader
+import fileManager
 from datetime import date
 from pathlib import Path
+from enum import Enum
+
+class Months(Enum):
+    JAN = 1
+    FEB = 2
+    MAR = 3
+    APR = 4
+    MAY = 5
+    JUN = 6
+    JUL = 7
+    AUG = 8
+    SEP = 9
+    OCT = 10
+    NOV = 11
+    DEC = 12
 
 # Start of pygame
 pygame.mixer.init()
@@ -10,13 +26,9 @@ pygame.mixer.init()
 # We the root directory
 baseDirectory = Path(__file__).resolve().parent
 
-# Returns all the tracks of a month
-def getTracksByMonth(monthId:str):
-    return jsonParser.getTracksByMonth(monthId)
-
 # Returns the metadata of the selected track
-def newTrack(month, trackId:str):
-    return jsonParser.getTrackMetadata(month, trackId)
+def newTrack(pMonthId, trackId:str):
+    return jsonParser.getTrackMetadata(pMonthId, trackId)
 
 # Selects a random track from the passed month
 def randomTrack(monthId:str):
@@ -24,9 +36,9 @@ def randomTrack(monthId:str):
 
 # Used to play tracks when is the correct date
 def playTrack(trackMetadata):
-    trackName = jsonParser.getTrackName(trackMetadata)
-    trackPath = baseDirectory / "assets/audio" / (trackMetadata["path"])
-    trackAuthor = jsonParser.getTrackAuthor(trackMetadata)
+    trackName = trackMetadata["name"]
+    trackPath = (baseDirectory.parent) / "assets/audio" / (trackMetadata["path"])
+    trackAuthor = trackMetadata["author"]
 
     pygame.mixer.music.load(str(trackPath))
     pygame.mixer.music.play(loops=0)
@@ -45,7 +57,7 @@ while True:
     answer = input()
 
     if(answer.lower() == "y"):
-        trackLoader.postTrack(answer)
+        trackLoader.insertTrack()
         break
 
     try:
@@ -55,7 +67,20 @@ while True:
 
         # Depending on the month, diferent tracks will be played
         try:
-            match currentMonth:
+            for month in Months:
+                if currentMonth == month.value:
+                    monthId = month.name.lower()
+                    break
+
+            trackId = fileManager.getDailyTrack(monthId, str(currentDay + 1))
+            
+            if(not trackId == ""):
+                print("El id de la canción de hoy es:", trackId)
+                todaysPhrase = fileManager.getDailyPhrase(monthId, str(currentDay))
+                print(todaysPhrase)
+                currentTrack = newTrack(monthId, trackId)
+            
+            """match currentMonth:
                 case 1:
                     monthId = "january"
                     monthTracks = getTracksByMonth(monthId)
@@ -159,10 +184,15 @@ while True:
                         currentTrack = newTrack(monthTracks, "all_i_want_for_chrismas")
                 case _:
                     print("¿Que hiciste para llegar acá?")
-                    break
-
+                    break"""
+                
         except Exception as e:
             print(f"Ha ocurrido el siguiente error: {e}")
+            break
+
+        if (monthId == ""):
+            print("Al parecer, llegaste al mes 13...")
+            break
 
         if (currentTrack == None):
             print("No hay pistas especiales el dia de hoy, eligiendo pista aleatoria...")
@@ -179,7 +209,7 @@ while True:
             print("Gracias por utilizar el reproductor Cullerio, ¿desea ingresar una nueva canción? (Y/N)")
             answer = input()
             
-            trackLoader.postTrack(answer)
+            trackLoader.insertTrack(answer)
 
     except KeyboardInterrupt:
         print("Programa detenido por el usuario")
