@@ -105,6 +105,7 @@ while True:
                 break
 
         playTrack(currentTrack)
+        print("Pro tip: use ctrl + c to skip the daily track if you want")
         trackCounter += 1
 
         # Prevents the script finishing before the song
