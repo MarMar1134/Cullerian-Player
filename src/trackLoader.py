@@ -2,6 +2,8 @@ import jsonParser
 import fileManager
 import eyed3
 
+# Prepares the logical object that's going to be used on the JSON parsing.
+# Returns the track metadata.
 def codifyTrack(pMonth:str, pPhraseDay:str):
     trackPath = fileManager.addTrack(pMonth[:3])
 
@@ -27,7 +29,9 @@ def codifyTrack(pMonth:str, pPhraseDay:str):
     )
 
     return trackMetadata
-    
+
+# Copies the track from its source to the matching folder. Also codifies the metadata of the track and creates
+# the phrase file if needed.
 def insertTrack():
         trackMonth = input("Ingrese el mes donde ingresar la pista: ")
 

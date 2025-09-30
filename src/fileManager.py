@@ -5,6 +5,8 @@ baseDirectory = Path(__file__).resolve().parent
 audioDirectory = (baseDirectory.parent) / "assets" / "audio"
 phrasesDirectory = (baseDirectory.parent) / "assets" / "phrases"
 
+# Defines a directory for the phrase file. If the phrase doesn't exist, it put him on the directory.
+# Returns True if the phrase didn't exist, False otherwise.
 def addPhrase(pMonthId:str, pDay:str, pPhrase:str):
     monthPath = phrasesDirectory / pMonthId
     phrasePath = monthPath / (pMonthId + "_" + pDay + ".txt")
@@ -23,6 +25,8 @@ def addPhrase(pMonthId:str, pDay:str, pPhrase:str):
     except Exception as e:
         print(f"Ha ocurrido el siguiente error: {e}")
 
+# With the passed month and day, determines with phrase is the one that goes.
+# Returns the phrase i found, an empty string otherwise.
 def getDailyPhrase(pMonth:str, pDay:str):
     monthPath = phrasesDirectory / pMonth[:3]
     phraseFile = pMonth + "_" + pDay + ".txt"
@@ -41,6 +45,8 @@ def getDailyPhrase(pMonth:str, pDay:str):
     except Exception as e:
         print(f"Ha ocurrido el siguiente error: {e}")
 
+# Copies the track from its source to his directory, based on the month selected by the user.
+# Returns the new location of the track.
 def addTrack(pMonthId:str):
     root = Tk()
     root.withdraw()
@@ -78,6 +84,8 @@ def addTrack(pMonthId:str):
     root.destroy()
     return newPath
 
+# With the current month and day, determines wich track needs to be played. Returns its id if found, an empty
+# string otherwise.
 def getDailyTrack(pMonthId:str, pDay:str):
     import jsonParser
 
@@ -90,7 +98,7 @@ def getDailyTrack(pMonthId:str, pDay:str):
     for month, tracks in tracksJson.items():
         for trackId, trackMetadata in tracks.items():
             currentPhrase = Path(trackMetadata["phrase"])
-            
+
             if phraseFile ==  currentPhrase.stem:
                 phraseFound = True
                 return trackId

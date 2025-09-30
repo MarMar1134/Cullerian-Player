@@ -8,18 +8,21 @@ from pathlib import Path
 baseDirectory = Path(__file__).resolve().parent
 tracks = (baseDirectory.parent) / "assets/data" / "tracks.json"
 
+# Returns the entire JSON ready to be read, without the necesity of re-open the actual file.
 def getTracksJson():
     with open(tracks) as file:
         tracksJson = json.load(file)
         
     return tracksJson
 
+# Returns the track's metadata. Is searched with the month and its own id.
 def getTrackMetadata(pMonthId, pTrackId):
     with open(tracks) as file:
         tracksJson = json.load(file)
 
     return tracksJson[pMonthId][pTrackId]
 
+# Returns a random track from the current month.
 def getRandomTrack(monthId: str):
     with open(tracks) as file:
         tracksJson = json.load(file)
@@ -29,7 +32,7 @@ def getRandomTrack(monthId: str):
     
     return tracksJson[monthId][randomTrackId]
 
-
+# The only thing that justifies this being a class is comodity at the time of passing new data.
 class Encoder:
     def __init__(self, pMonth:str, pName:str, pAuthor:str, pTrackId:str, pPhraseDay:str):
         self.month = pMonth[:3].lower()
@@ -39,6 +42,7 @@ class Encoder:
         self.author = pAuthor
         self.phrase = self.month[:3] + "_" + pPhraseDay + ".txt" if not pPhraseDay == "" else ""
 
+    # Writes the data given on the constructor onto tracks.json
     def encodeTrack(self):
         if not tracks.exists():
             self._createEmptyTracksFile()
