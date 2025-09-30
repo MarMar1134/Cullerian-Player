@@ -15,7 +15,7 @@ def addPhrase(pMonthId:str, pDay:str, pPhrase:str):
         Path(monthPath).mkdir()
 
     if(phrasePath.exists()):
-        print("El dia solicitado ya existe")
+        print("This day already has a phrase.")
         return False
 
     try:
@@ -23,7 +23,7 @@ def addPhrase(pMonthId:str, pDay:str, pPhrase:str):
             file.write(pPhrase)
 
     except Exception as e:
-        print(f"Ha ocurrido el siguiente error: {e}")
+        print(f"The following error just happened: {e}")
 
 # With the passed month and day, determines with phrase is the one that goes.
 # Returns the phrase i found, an empty string otherwise.
@@ -33,8 +33,7 @@ def getDailyPhrase(pMonth:str, pDay:str):
     phrasePath = monthPath / phraseFile
 
     if(not phrasePath.exists()):
-        print("El dia solicitado no tiene una frase especial\n")
-        print(phrasePath)
+        print("This day has no special phrase.\n")
         return ""
     
     try:
@@ -43,7 +42,7 @@ def getDailyPhrase(pMonth:str, pDay:str):
         
         return currentPhrase
     except Exception as e:
-        print(f"Ha ocurrido el siguiente error: {e}")
+        print(f"The following error just happened: {e}")
 
 # Copies the track from its source to his directory, based on the month selected by the user.
 # Returns the new location of the track.
@@ -52,12 +51,12 @@ def addTrack(pMonthId:str):
     root.withdraw()
 
     track = filedialog.askopenfilename(
-        title="Selecciona una pista",
-        filetypes=[("Archivos de audio", "*.mp3 *.wav *.ogg")]
+        title="Track selector",
+        filetypes=[("Audio files", "*.mp3 *.wav *.ogg")]
     )
 
     if not track:
-        print("No se seleccionó ningún archivo")
+        print("No files found")
         return None
 
     trackPath = Path(track)
@@ -77,7 +76,7 @@ def addTrack(pMonthId:str):
             copy.write(fileData)
 
     except Exception as e:
-        print(f"Ha ocurrido el siguiente error: {e}")
+        print(f"The following error just happened: {e}")
         root.destroy()
         return None
 

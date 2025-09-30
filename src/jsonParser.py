@@ -62,4 +62,4 @@ class Encoder:
                 json.dump(existingTracks, file, indent=3, ensure_ascii=False)
         
         except Exception as e:
-            print(f"Ha ocurrido el siguiente error: {e}")
+            print(f"The following error just happened: {e}")

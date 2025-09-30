@@ -8,10 +8,10 @@ def codifyTrack(pMonth:str, pPhraseDay:str):
     trackPath = fileManager.addTrack(pMonth[:3])
 
     if trackPath is None:
-        print("No se pudo agregar la pista")
+        print("The track couldn't be added.")
         return
     
-    print(f"Pista agregada: {trackPath}")
+    print(f"Track added succesfully to the following path: {trackPath}")
 
     track = eyed3.load(trackPath)
     trackName = track.tag.title

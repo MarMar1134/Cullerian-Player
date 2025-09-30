@@ -44,7 +44,7 @@ def playTrack(trackMetadata):
     pygame.mixer.music.load(str(trackPath))
     pygame.mixer.music.play(loops=0)
 
-    print(f"Reproduciendo: {trackName} - {trackAuthor}")
+    print(f"Playing: {trackName} - {trackAuthor}")
 
 # Counter for stopping the track once finishes.
 trackCounter = 0
@@ -53,13 +53,6 @@ trackCounter = 0
 while True:
     currentMonth = date.today().month
     currentDay = date.today().day
-
-    print("Bienvenido al reproductor Cullerio, ¿desea agregar una nueva canción? (Y/N)")
-    answer = input()
-
-    if(answer.lower() == "y"):
-        trackLoader.insertTrack()
-        break
 
     try:
         monthTracks = None
@@ -83,12 +76,12 @@ while True:
 
         # If, somehow, the monthId wasn't set up, we break the loop and exit.
         if (monthId == ""):
-            print("Al parecer, llegaste al mes 13...")
+            print("Somehow, you discovered month 13...")
             break
 
         # If today there are no special tracks, we set up one randomly.
         if (currentTrack == None):
-            print("No hay pistas especiales el dia de hoy, eligiendo pista aleatoria...")
+            print("There are now special tracks today. Choosing a random one...")
             currentTrack = randomTrack(monthId)
 
         playTrack(currentTrack)
@@ -100,15 +93,24 @@ while True:
 
         # Once the song finishes, we ask the user if it wants to add a new track.
         if (trackCounter >= 1):
-            print("Gracias por utilizar el reproductor Cullerio, ¿desea ingresar una nueva canción? (Y/N)")
+            print("Thanks for utilize the Cullerian Player!, do you want to add another track? (Y/N)")
             answer = input()
             
             if (answer.lower() == "y"):
                 trackLoader.insertTrack()
             else:
-                print("Entendido, ¡adios!")
+                print("Undestood, good bye!")
                 break
 
     except KeyboardInterrupt:
-        print("Programa detenido por el usuario")
+        print("Track stopped by user input.\n")
+
+        print("Thanks for utilize the Cullerian Player!, do you want to add another track? (Y/N)")
+        answer = input()
+            
+        if (answer.lower() == "y"):
+            trackLoader.insertTrack()
+        else:
+            print("Undestood, good bye!")
+            break
         break
