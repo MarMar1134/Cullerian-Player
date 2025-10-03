@@ -1,4 +1,3 @@
-import pygame
 from data import jsonParser, fileManager
 from datetime import date
 from pathlib import Path
@@ -19,16 +18,6 @@ class Months(Enum):
     NOV = 11
     DEC = 12
 
-# Start of pygame.
-pygame.mixer.init()
-
-# This allows the program to work on any machine.
-currentFile = Path(__file__).resolve()
-srcDirectory = currentFile.parent.parent
-root = srcDirectory.parent
-
-baseDirectory = root
-
 # Returns the track's metadata.
 def newTrack(pMonthId:str, trackId:str):
     return jsonParser.getTrackMetadata(pMonthId, trackId)
@@ -39,6 +28,12 @@ def randomTrack(monthId:str):
 
 # Plays the selected track once. Also displays some of its metadata.
 def getTrackData(trackMetadata):
+    currentFile = Path(__file__).resolve()
+    srcDirectory = currentFile.parent.parent
+    root = srcDirectory.parent
+
+    baseDirectory = root
+
     trackName = trackMetadata["name"]
     trackPath = baseDirectory / "assets/audio" / (trackMetadata["path"])
     trackAuthor = trackMetadata["author"]
