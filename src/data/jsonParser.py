@@ -5,8 +5,8 @@ import json
 import random
 from pathlib import Path
 
-baseDirectory = Path(__file__).resolve().parent
-tracksPath = (baseDirectory.parent) / "assets" / "data" / "tracks.json"
+baseDirectory = Path(__file__).resolve().parent.parent.parent
+tracksPath = baseDirectory / "assets" / "data" / "tracks.json"
 
 def isJsonEmpty():
     return not tracksPath.exists()

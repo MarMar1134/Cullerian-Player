@@ -1,9 +1,8 @@
-from tkinter import Tk, filedialog
 from pathlib import Path
 
-baseDirectory = Path(__file__).resolve().parent
-audioDirectory = (baseDirectory.parent) / "assets" / "audio"
-phrasesDirectory = (baseDirectory.parent) / "assets" / "phrases"
+baseDirectory = Path(__file__).resolve().parent.parent.parent
+audioDirectory = baseDirectory / "assets" / "audio"
+phrasesDirectory = baseDirectory / "assets" / "phrases"
 
 # Defines a directory for the phrase file. If the phrase doesn't exist, it put him on the directory.
 # Returns True if the phrase didn't exist, False otherwise.
@@ -51,26 +50,25 @@ def getDailyPhrase(pMonth:str, pDay:str):
 
 # Copies the track from its source to his directory, based on the month selected by the user.
 # Returns the new location of the track.
-def addTrack(pMonthId:str):
-    root = Tk()
-    root.withdraw()
+def addTrack(pMonthId:str, pTrackPath:Path):
+    from customtkinter  import filedialog
 
-    track = filedialog.askopenfilename(
+    """track = filedialog.askopenfilename(
         title="Track selector",
         filetypes=[("Audio files", "*.mp3 *.wav *.ogg")]
     )
 
-    if not track:
+    if (not track):
         print("No files found")
         return None
 
     trackPath = Path(track)
 
     if (not trackPath.exists()):
-        trackPath.mkdir(parents=True, exist_ok=True)
+        trackPath.mkdir(parents=True, exist_ok=True)"""
 
     try:
-        with open(trackPath, "rb") as file:
+        with open(pTrackPath, "rb") as file:
             fileData = file.read()
 
         monthPath = audioDirectory / pMonthId
@@ -78,7 +76,7 @@ def addTrack(pMonthId:str):
         if(not monthPath.exists()):
             Path(monthPath).mkdir(parents=True, exist_ok=True)
 
-        newPath = monthPath / trackPath.name
+        newPath = monthPath / pTrackPath.name
 
         with open(newPath, "wb") as copy:
             copy.write(fileData)
@@ -86,19 +84,29 @@ def addTrack(pMonthId:str):
     except Exception as e:
         print(f"The following error just happened: {e}")
         print("We are on module fileManager.py, addTrack()")
-        root.destroy()
         return None
 
-    root.destroy()
     return newPath
 
-if __name__ == "__main__":
-    addTrack("jan")
+def getBaseTrackPath():
+    from customtkinter import filedialog
+
+    track = filedialog.askopenfilename(
+        title="Track selector",
+        filetypes=[("Audio files", "*.mp3 *.wav *.ogg")]
+    )
+
+    if (not track):
+        return None
+    
+    trackPath = Path(track)
+
+    return trackPath
 
 # With the current month and day, determines wich track needs to be played. Returns its id if found, an empty
 # string otherwise.
 def getDailyTrack(pMonthId:str, pDay:str):
-    import jsonParser
+    from data import jsonParser
 
     tracksJson = jsonParser.getTracksJson()
 
@@ -118,3 +126,6 @@ def getDailyTrack(pMonthId:str, pDay:str):
             break
 
     return ""
+
+if __name__ == "__main__":
+    print(baseDirectory)

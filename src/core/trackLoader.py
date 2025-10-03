@@ -1,6 +1,5 @@
-import jsonParser
-import fileManager
 import eyed3
+from data import jsonParser, fileManager
 
 # Prepares the logical object that's going to be used on the JSON parsing.
 # Returns the track metadata.
