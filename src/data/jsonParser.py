@@ -4,7 +4,7 @@
 import json
 import random
 from pathlib import Path
-from log import log_config
+from src.log import logConfig
 
 baseDirectory = Path(__file__).resolve().parent.parent.parent
 tracksPath = baseDirectory / "assets" / "data" / "tracks.json"
@@ -68,11 +68,11 @@ class Encoder:
             with open(tracksPath, "w", encoding='utf-8') as file:
                 json.dump(existingTracks, file, indent=3, ensure_ascii=False)
 
-            log_config.logger.info(f"Track data added-id:{self.trackId}, path:{self.path}")
+            logConfig.logger.info(f"Track data added-id:{self.trackId}, path:{self.path}")
             
             return True
         except Exception as e:
-            log_config.logger.error(f"An error happened while encoding the track data: {e}", exc_info=True)
+            logConfig.logger.error(f"An error happened while encoding the track data: {e}", exc_info=True)
             return False
         
     def trackExists(self):
@@ -85,11 +85,11 @@ class Encoder:
         for month, tracks in trackData.items():
             for trackId, trackMetadata in tracks.items():
                 if trackId == self.trackId:
-                    log_config.logger.info(f"User tried to insert an existing track:{self.trackId} on tracks.json")
+                    logConfig.logger.info(f"User tried to insert an existing track:{self.trackId} on tracks.json")
                     return True
                 
         else:
-            log_config.logger.info(f"The given track:{self.trackId} doesn't exist on the current data.", exc_info=True)
+            logConfig.logger.info(f"The given track:{self.trackId} doesn't exist on the current data.", exc_info=True)
             return False
     
     def modifyTrackData(self):
@@ -104,8 +104,8 @@ class Encoder:
             trackData[self.month][self.trackId]["author"] = self.author
             trackData[self.month][self.trackId]["phrase"] = self.phrase
 
-            log_config.logger.info(f"Track data with id:{self.trackId} has been succesfully modified.")
+            logConfig.logger.info(f"Track data with id:{self.trackId} has been succesfully modified.")
             return True
         except Exception as e:
-            log_config.logger.error(f"An error happened while trying to modify the track's data: {e}", exc_info=True)
+            logConfig.logger.error(f"An error happened while trying to modify the track's data: {e}", exc_info=True)
             return False

@@ -2,7 +2,7 @@
 its respective paths if needed."""
 
 from pathlib import Path
-from log import log_config
+from src.log import logConfig
 
 baseDirectory = Path(__file__).resolve().parent.parent.parent
 audioDirectory = baseDirectory / "assets" / "audio"
@@ -22,17 +22,17 @@ def addPhrase(pMonthId:str, pDay:str, pPhrase:str):
        monthPath.mkdir(parents=True, exist_ok=True)
 
     if(phrasePath.exists()):
-        log_config.logger.warning(f"This day already has a phrase: {pMonthId}_{pDay}")
+        logConfig.logger.warning(f"This day already has a phrase: {pMonthId}_{pDay}")
         return False
 
     try:
         with open(phrasePath, "w", encoding="utf-8") as file:
             file.write(pPhrase)
 
-            log_config.logger.info(f"A new phrase has been added: {phrasePath}")
+            logConfig.logger.info(f"A new phrase has been added: {phrasePath}")
 
     except Exception as e:
-        log_config.logger.error(f"An error happende while trying to add the Phrase: {e}", exc_info=True)
+        logConfig.logger.error(f"An error happende while trying to add the Phrase: {e}", exc_info=True)
 
 def getDailyPhrase(pMonth:str, pDay:str):
     """With the passed month and day, determines with phrase is the one that goes.
@@ -43,7 +43,7 @@ def getDailyPhrase(pMonth:str, pDay:str):
     phrasePath = monthPath / phraseFile
 
     if(not phrasePath.exists()):
-        log_config.logger.info(f"This day has no special phrase: {pMonth}_{pDay}")
+        logConfig.logger.info(f"This day has no special phrase: {pMonth}_{pDay}")
         return ""
     
     try:
@@ -52,7 +52,7 @@ def getDailyPhrase(pMonth:str, pDay:str):
         
         return currentPhrase
     except Exception as e:
-        log_config.logger.error(f"An error happended while trying to get the daily phrase: {e}", exc_info=True)
+        logConfig.logger.error(f"An error happended while trying to get the daily phrase: {e}", exc_info=True)
         return ""
 
 # Copies the track from its source to his directory, based on the month selected by the user.
@@ -75,10 +75,10 @@ def addTrack(pMonthId:str, pTrackPath:Path):
         with open(newPath, "wb") as copy:
             copy.write(fileData)
 
-        log_config.logger.info(f"A new track has been added: {newPath}")
+        logConfig.logger.info(f"A new track has been added: {newPath}")
 
     except Exception as e:
-        log_config.logger.error(f"An error happende while trying to add the track: {e}", exc_info=True)
+        logConfig.logger.error(f"An error happende while trying to add the track: {e}", exc_info=True)
         return None
 
     return newPath

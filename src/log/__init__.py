@@ -1,5 +1,5 @@
 """Logging system for Cullerian Player."""
 
-from . import log_config
+from . import logConfig
 
-__all__ = ['log_config']
+__all__ = ['logConfig']
