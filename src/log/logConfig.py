@@ -18,16 +18,13 @@ def setup_logger():
 
     logFilePath = logPath / 'cullerian_player.log'
 
-    # Create handlers
     consoleHandler = logging.StreamHandler(sys.stdout)
     fileHandler = logging.FileHandler(logFilePath)
 
-    # Create formatters and add it to handlers
     logFormat = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     consoleHandler.setFormatter(logFormat)
     fileHandler.setFormatter(logFormat)
 
-    # Add handlers to the logger
     logger.addHandler(consoleHandler)
     logger.addHandler(fileHandler)
 
